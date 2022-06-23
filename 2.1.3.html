@@ -1,0 +1,69 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽象文章类</title>
+  </head>
+
+  <body>
+    <div id="app"></div>
+  </body>
+  <script>
+    const App = document.querySelector("#app");
+
+    class Article {
+      el = null;
+      likeCount = null;
+      data = {};
+      constructor() {
+        this.data = this.initData(arguments);
+      };
+
+      initData(args) {
+        return {
+          title: args[0] || "",
+          likeCount: args[1] || 0
+        };
+      };
+
+      getTemplate() {
+        const { title, likeCount } = this.data;
+        return `
+          <div class="article" style="user-select: none;">
+            ${ title }
+            <span class="like" style="cursor: pointer;">
+              ❤️
+              <span class="likeCount">
+                ${ likeCount }  
+              </span>
+            </span>  
+          </div>
+        `;
+      };
+
+      render() {
+        const template = this.getTemplate();
+        this.el = document.createElement("div");
+        this.el.innerHTML = template;
+        this.el.querySelector(".like").addEventListener("click", this.handleClick.bind(this), false);
+        this.likeCount = this.el.querySelector(".likeCount");
+        return this.el;
+      };
+
+      handleClick() {
+        this.data.likeCount += 1;
+        this.likeCount.innerText = this.data.likeCount;
+      };
+    }
+
+    for( let i=0; i<10; i++ ) {
+      const domItem = new Article(`测试标题${ i }`).render();
+      app.appendChild(domItem);
+    }
+  </script>
+
+  </html>
