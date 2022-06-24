@@ -1,0 +1,195 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>san组件</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 10px;
+      }
+
+      .bookItem {
+        width: 500px;
+        border: 1px solid #000;
+        padding: 20px 10px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .bookItem:not(:last-of-type) {
+        margin-bottom: 10px;
+      }
+
+      .user {
+        display: flex;
+        align-items: center;
+      }
+
+      .user>img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+      }
+
+      .userInfo {
+        flex: 1;
+        margin-left: 10px;
+      }
+
+      .userInfo>strong {
+        display: block;
+        font: bold 20px/30px "微软雅黑";
+        color: #232323;
+      }
+
+      .userInfo>span {
+        display: block;
+        font: 14px/20px "微软雅黑";
+        color: #666;
+      }
+
+      .like {
+        display: flex;
+        align-items: center;
+        height: 30px;
+        border: 1px solid #999;
+        padding: 0 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .like:active {
+        opacity: .5;
+      }
+
+      .like>i {
+        font-style: normal;
+        font: 12px/1 "微软雅黑";
+      }
+
+      .like>em {
+        margin-left: 5px;
+        font: 14px/1 "微软雅黑";
+        color: #232323;
+      }
+
+      h2 {
+        font: bold 24px/30px "微软雅黑";
+        color: #232323;
+        margin: 20px 0 0;
+      }
+
+      p {
+        font-size: bold 16px/24px "微软雅黑";
+        margin: 0;
+        color: #666;
+      }
+
+      a {
+        display: block;
+        text-decoration: none;
+        font: 14px/20px "微软雅黑";
+        color: #999;
+        margin-top: 20px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      a:active {
+        opacity: .5;
+      }
+    </style>
+  </head>
+
+  <body>
+
+  </body>
+  <script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+  <script>
+    function addZero(num) {
+      if( isNaN(num) || num >= 10 ) return num;
+      return `0${num}`;
+    };
+
+    let BookItem = san.defineComponent({
+      template: `
+        <div class="bookItem" s-for="item, index in dataList">
+          <div class="user">
+            <img src="{{ item.author.avatar }}" alt="{{ item.author.name }}" />
+            <div class="userInfo">
+              <strong>{{ item.author.name }}</strong>
+              <span>{{ formatDate(item.author.date) }}</span>
+            </div>
+            <div class="like" on-click="clickLike(index)">
+              <i>❤️</i>
+              <em>{{ item.likeCount }}</em>   
+            </div>
+          </div>
+          <h2>{{ item.title }}</h2>
+          <p>{{ item.desc }}</p>
+          <a href="javascript:;">{{ item.more }}</a>
+        </div>
+      `,
+      initData() {
+        return {
+          dataList: [
+            {
+              title: "文章标题1",
+              desc: "文章描述1",
+              more: "文章描述",
+              likeCount: 0,
+              author: {
+                avatar: "https://huyaimg.msstatic.com/avatar/1023/81/645efbb56cdfe85d3c65d5e6444c91_180_135.jpg?1616815648",
+                name: "用户名",
+                date: new Date()
+              }
+            },
+            {
+              title: "文章标题2",
+              desc: "文章描述2",
+              more: "文章描述",
+              likeCount: 0,
+              author: {
+                avatar: "https://huyaimg.msstatic.com/avatar/1023/81/645efbb56cdfe85d3c65d5e6444c91_180_135.jpg?1616815648",
+                name: "用户名",
+                date: new Date()
+              }
+            },
+          ]
+        }
+      },
+      clickLike(index) {
+        const dataList = this.data.get("dataList");
+        dataList[index].likeCount += 1;
+        this.data.set("dataList", dataList);
+      },
+      formatDate(t) {
+        const year = t.getFullYear();
+        const month = t.getMonth() + 1;
+        const day = t.getDate();
+        const hour = t.getHours();
+        const minutes = t.getMinutes();
+        const seconds = t.getSeconds();
+        return `${year}-${addZero(month)}-${addZero(day)} ${addZero(hour)}:${addZero(minutes)}:${addZero(seconds)}`;
+      }
+    });
+    const comp = new BookItem();
+    comp.attach(document.body);
+  </script>
+
+  </html>
